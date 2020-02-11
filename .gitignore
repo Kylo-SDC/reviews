@@ -1,0 +1,11 @@
+*.log
+node_modules
+public/*.js
+public/*.png
+public/*.otf
+.eslintrc.json
+.eslintignore
+oldeslintrc.js
+reactHooksSample.jsx
+coverage
+spec/__snapshot__

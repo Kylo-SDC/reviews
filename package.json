@@ -9,7 +9,7 @@
     "test": "jest --notify --detectOpenHandles --coverage --config ./jest.config.json --updateSnapshot",
     "build": "webpack",
     "dev:build": "webpack -d -w",
-    "seed": "node database/seed.js",
+    "seed": "node  --max-old-space-size=8192 database/seed.js",
     "mongo": "sudo service mongod start"
   },
   "repository": {

@@ -3,8 +3,6 @@ const Jabber = require('jabber');
 const moment = require('moment');
 const db = require('./mongo');
 
-// moment(randomDate).fromNow()
-
 const buzzWords = ['great food', 'eat', 'service', 'drinks', 'loved', 'never again', 'dessert', 'main menu', 'appetizers', 'enjoyed', 'hated', 'server', 'noise', 'waitress', 'waiter', 'slow', 'fast', 'go again', 'clean', 'dirty', 'kids', 'our group', 'slow service', 'cold food', 'awesome drinks', 'fun time', 'romantic atmosphere', 'dinner', 'lunch', 'breakfast', 'hot plate', 'smelled wonderful', 'no alcohol', 'bartender', 'wine list', 'outdoor seating', 'large room', 'no tips', 'valet parking', 'fine dining', 'dishes', 'shrimp', 'steak', 'chicken', 'beef', 'pasta', 'cake', 'pastries', 'creme brulee', 'simmering', 'coffee', 'fresh food', 'candlelit', 'anniversary', 'birthday', 'party', 'with friends', 'evening', 'stuffed', 'would go again', 'recommend this place', 'restrooms clean', 'host greeting', 'lovely place', 'best view', 'indoor seating', 'waited an hour', 'risotto', 'baked salmon', 'fried rice', 'shrimp scampi', 'sushi', 'wait time'];
 
 const tags = ['Good for groups', 'Desserts', 'Appetizers', 'Drinks', 'Kid friendly'];
@@ -24,30 +22,29 @@ const createReview = (resId, revId) => {
     review.lastName = '';
   }
   review.city = faker.address.city();
-  review.numReviews = Math.floor(Math.random() * (25 - 1)) + 1;
-  review.overall = Math.floor(Math.random() * (5 - 1)) + 1;
-  review.food = Math.floor(Math.random() * (5 - 1)) + 1;
-  review.service = Math.floor(Math.random() * (5 - 1)) + 1;
-  review.ambience = Math.floor(Math.random() * (5 - 1)) + 1;
+  review.numReviews = Math.floor(Math.random() * (24)) + 1;
+  review.overall = Math.floor(Math.random() * (4)) + 1;
+  review.food = Math.floor(Math.random() * (4)) + 1;
+  review.service = Math.floor(Math.random() * (4)) + 1;
+  review.ambience = Math.floor(Math.random() * (4)) + 1;
   review.dineDate = moment(faker.date.between('2019-01-01', '2020-01-24')).format('YYYY-MM-DD');
-  // dineDate = faker.date.between('2019-01-01', '2020-01-24');
-  review.noise = Math.floor(Math.random() * (5 - 1)) + 1;
+  review.noise = Math.floor(Math.random() * (4)) + 1;
   review.recommend = Math.random() < 0.7;
-  review.comments = jabber.createParagraph(Math.floor(Math.random() * (50 - 10)) + 10);
+  review.comments = jabber.createParagraph(Math.floor(Math.random() * (40)) + 10);
   review.filterTag = tags[Math.floor(Math.random() * tags.length)];
   review.vip = Math.random() < 0.3;
   review.color = circleColors[Math.floor(Math.random() * circleColors.length)];
   return review;
 };
 
-const createReviews = () => {
+const createReviews = (numberOfRestaurants, maxNumberOfReviews) => {
   // number of restaurants (will be 100)
-  const restaurantNum = 100;
+  const restaurantNum = numberOfRestaurants || 100;
   const reviewsArray = [];
   let prevReviewCount = 0;
   for (let i = 1; i <= restaurantNum; i += 1) {
     // number of reviews per restaurant will be 30-90 , random here
-    const reviewCount = Math.floor(Math.random() * (90 - 30)) + 30;
+    const reviewCount = Math.floor(Math.random() * (maxNumberOfReviews)) + 5;
     for (let j = 0; j < reviewCount; j += 1) {
       prevReviewCount += 1;
       reviewsArray.push(createReview(i, prevReviewCount));
@@ -56,11 +53,13 @@ const createReviews = () => {
   return reviewsArray;
 };
 
-async function insertDummyData() {
-  await db.Review.insertMany(createReviews());
+// function that will be called that will return an array of data
+async function insertDummyData(numberOfRestaurants, maxNumberOfReviews) {
+  await db.Review.insertMany(createReviews(numberOfRestaurants, maxNumberOfReviews));
 }
 
-insertDummyData()
+
+insertDummyData(1000000, 5)
   .then(() => {
     console.log('Database seeded');
     process.exit();

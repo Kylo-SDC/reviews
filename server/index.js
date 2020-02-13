@@ -44,7 +44,7 @@ app.post('/api/reviews', (req, res) => {
   const newReview = req.body;
   db.addOneReview(newReview)
     .then((addedReview) => {
-      res.status(200).json(addedReview);
+      res.status(201).json(addedReview);
     })
     .catch((error) => {
       console.error(error);

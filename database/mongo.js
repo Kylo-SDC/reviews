@@ -58,8 +58,8 @@ const addOneReview = (newReviewData) => {
         color: newReviewData.color,
       });
 
-      newReview.save(newReviewData);
-      return ;
+
+      return newReview.save(newReviewData);
     });
 };
 

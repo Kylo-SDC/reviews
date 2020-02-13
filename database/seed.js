@@ -1,7 +1,7 @@
 const faker = require('faker/locale/en_US');
 const Jabber = require('jabber');
 const moment = require('moment');
-const Review = require('./');
+const db = require('./mongo');
 
 // moment(randomDate).fromNow()
 
@@ -13,8 +13,9 @@ const circleColors = ['#6c8ae4', '#d86441', '#bb6acd', '#df4e96'];
 
 const jabber = new Jabber(buzzWords, 2);
 
-const createReview = (resId) => {
+const createReview = (resId, revId) => {
   const review = {};
+  review._id = revId;
   review.restaurantId = resId;
   review.firstName = (Math.random() < 0.7) ? faker.name.firstName() : '';
   if (review.firstName.length) {
@@ -43,22 +44,28 @@ const createReviews = () => {
   // number of restaurants (will be 100)
   const restaurantNum = 100;
   const reviewsArray = [];
+  let prevReviewCount = 0;
   for (let i = 1; i <= restaurantNum; i += 1) {
     // number of reviews per restaurant will be 30-90 , random here
     const reviewCount = Math.floor(Math.random() * (90 - 30)) + 30;
     for (let j = 0; j < reviewCount; j += 1) {
-      reviewsArray.push(createReview(i));
+      prevReviewCount += 1;
+      reviewsArray.push(createReview(i, prevReviewCount));
     }
   }
   return reviewsArray;
 };
 
 async function insertDummyData() {
-  await Review.insertMany(createReviews());
+  await db.Review.insertMany(createReviews());
 }
 
 insertDummyData()
   .then(() => {
     console.log('Database seeded');
     process.exit();
+  })
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
   });

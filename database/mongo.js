@@ -33,11 +33,9 @@ const getSortedRestaurantReviews = ({ sortField, restaurantId, list, sorting }) 
 
 // requires that all fields except the firstName and lastName
 const addOneReview = (newReviewData) => {
-  console.log('this=============>', newReviewData);
   return Review.findOne({})
     .sort('-_id')
     .then(({_id}) => {
-      // newReviewData._id = maxId + 1;
       newReview = new Review ({
         _id: _id + 1,
         restaurantId: newReviewData.restaurantId,
@@ -57,8 +55,6 @@ const addOneReview = (newReviewData) => {
         vip: newReviewData.vip,
         color: newReviewData.color,
       });
-
-
       return newReview.save(newReviewData);
     });
 };

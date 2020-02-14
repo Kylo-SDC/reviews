@@ -11,60 +11,60 @@ const circleColors = ['#6c8ae4', '#d86441', '#bb6acd', '#df4e96'];
 
 const jabber = new Jabber(buzzWords, 2);
 
-const createReview = (resId, revId) => {
+const createReview = (reviewIdTracker) => {
   const review = {};
-  review._id = revId;
-  review.restaurantId = resId;
+
+  // review
+  review.id = reviewIdTracker;
+  review.overall = faker.random.number({min:1, max: 5});
+  review.food = faker.random.number({min:1, max: 5});
+  review.service = faker.random.number({min:1, max: 5});
+  review.ambience = faker.random.number({min:1, max: 5});
+  review.dineDate = moment(faker.date.between('2019-01-01', '2020-01-24')).format('YYYY-MM-DD');
+  review.noise = faker.random.number({min:1, max: 5});
+  review.recommend = Math.random() < 0.7;
+  review.comments = jabber.createParagraph(faker.random.number({min:10, max: 50}));
+  review.filterTag = faker.random.arrayElement(tags);
+
+  // person
+  review.numReviews = faker.random.number({min:1, max:25});
+  review.color = faker.random.arrayElement(circleColors);
+  review.vip = Math.random() < 0.3;
   review.firstName = (Math.random() < 0.7) ? faker.name.firstName() : '';
   if (review.firstName.length) {
     review.lastName = (Math.random() < 0.7) ? faker.name.lastName() : '';
   } else {
     review.lastName = '';
   }
-  review.city = faker.address.city();
-  review.numReviews = Math.floor(Math.random() * (24)) + 1;
-  review.overall = Math.floor(Math.random() * (4)) + 1;
-  review.food = Math.floor(Math.random() * (4)) + 1;
-  review.service = Math.floor(Math.random() * (4)) + 1;
-  review.ambience = Math.floor(Math.random() * (4)) + 1;
-  review.dineDate = moment(faker.date.between('2019-01-01', '2020-01-24')).format('YYYY-MM-DD');
-  review.noise = Math.floor(Math.random() * (4)) + 1;
-  review.recommend = Math.random() < 0.7;
-  review.comments = jabber.createParagraph(Math.floor(Math.random() * (40)) + 10);
-  review.filterTag = tags[Math.floor(Math.random() * tags.length)];
-  review.vip = Math.random() < 0.3;
-  review.color = circleColors[Math.floor(Math.random() * circleColors.length)];
+
   return review;
 };
 
-const createReviews = (numberOfRestaurants, maxNumberOfReviews) => {
-  // number of restaurants (will be 100)
-  const restaurantNum = numberOfRestaurants || 100;
-  const reviewsArray = [];
-  let prevReviewCount = 0;
-  for (let i = 1; i <= restaurantNum; i += 1) {
-    // number of reviews per restaurant will be 30-90 , random here
-    const reviewCount = Math.floor(Math.random() * (maxNumberOfReviews)) + 5;
+const createRestaurants = (numberOfRestaurants, lastRestId, lastRevId) => {
+  const restaurantCount = numberOfRestaurants || 100;
+  let reviewIdTracker = lastRevId;
+  const restaurantArray = [];
+
+  for (let i = 1; i <= restaurantCount; i += 1) {
+    let restaurant = {};
+    restaurant.city = faker.address.city();
+    restaurant.restaurantId = lastRestId + i;
+    restaurant.reviews = [];
+
+    console.log(restaurant.restaurantId);
+    const reviewCount = faker.random.number({min:5, max: 10});
+
     for (let j = 0; j < reviewCount; j += 1) {
-      prevReviewCount += 1;
-      reviewsArray.push(createReview(i, prevReviewCount));
+      reviewIdTracker += 1;
+      restaurant.reviews.push(createReview(reviewIdTracker));
     }
+    restaurantArray.push(restaurant);
   }
-  return reviewsArray;
+
+  return {restaurants: restaurantArray, lastRevId: reviewIdTracker};
 };
 
-// function that will be called that will return an array of data
-async function insertDummyData(numberOfRestaurants, maxNumberOfReviews) {
-  await db.Review.insertMany(createReviews(numberOfRestaurants, maxNumberOfReviews));
-}
+// createRestaurants(10, 1000, 1500)
 
-
-insertDummyData(1000000, 5)
-  .then(() => {
-    console.log('Database seeded');
-    process.exit();
-  })
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+// returns {restaurants: {rest.city, rest.id, rest.reviews: [all specific review data]}, lastRevId: lastId used}
+module.exports.createRestaurants = createRestaurants;

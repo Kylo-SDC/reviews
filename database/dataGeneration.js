@@ -15,19 +15,18 @@ const allWritesFinished = [false, false];
 
 
 
-async function createReviewersAndReviews(NumberOfPeople) {
+function createReviewers(NumberOfPeople) {
   let reviewerCount = NumberOfPeople || 100;
-  const writeReviews = fs.createWriteStream('Reviews.csv');
-  const writeReviewers = fs.createWriteStream('Reviewers.csv');
+  // const writeReviews = fs.createWriteStream('/media/mrclean/WD Black 2TB/CSV/Reviews.csv');
+  const writeReviewers = fs.createWriteStream('/media/mrclean/WD Black 2TB/CSV/Reviewers.csv');
   let ok = true;
-  let reviewIndex = 0;
 
 
   writeReviewers.write('id, color, vip, reviewCount, firstName, lastName \n');
-  writeReviews.write(`id, restaurantId, reviewerId overall, food, service, ambience, dineDate, noise, recommend, comments, filterTag \n`)
+
 
   writeReviewerToCSV();
-  async function writeReviewerToCSV() {
+  function writeReviewerToCSV() {
     do {
       let reviewer = {};
       reviewer.id = reviewerCount;
@@ -40,11 +39,11 @@ async function createReviewersAndReviews(NumberOfPeople) {
       } else {
         reviewer.lastName = '';
       }
-      reviewerCount -= 1; // maybe move to below the review section?
+      reviewerCount -= 1;
 
       ///////////////////////////////////////////
 
-      reviewIndex += await writeReview(reviewer.id, reviewer.reviewCount, writeReviews, reviewIndex);
+      // await writeReview(reviewer.id, reviewer.reviewCount, writeReviews);
 
       if (reviewerCount === -1) {
         writeReviewers.end();
@@ -61,7 +60,12 @@ async function createReviewersAndReviews(NumberOfPeople) {
   }
 };
 
-async function writeReview(reviewerId, numberOfReviews, writeReviews, reviewIndex){
+
+// re-write to be independent and select random users && random restaurants
+function createReviews(numberOfReviews){
+  const writeReviews = fs.createWriteStream('/media/mrclean/WD Black 2TB/CSV/Reviews.csv');
+  writeReviews.write(`id, restaurantId, reviewerId, overall, food, service, ambience, dineDate, noise, recommend, filterTag, comments \n`)
+  let reviewIndex = 0;
 
   let reviewOk = true;
   writeReviewToCSV();
@@ -71,7 +75,7 @@ async function writeReview(reviewerId, numberOfReviews, writeReviews, reviewInde
     do {
       let review ={};
       review.restaurantId = Math.floor(Math.random() * 10000000);
-      review.reviewerId = reviewerId;
+      review.reviewerId =  Math.floor(Math.random() * 10000000);
       review.id = reviewIndex;
       review.overall = faker.random.number({min:1, max: 5});
       review.food = faker.random.number({min:1, max: 5});
@@ -86,7 +90,11 @@ async function writeReview(reviewerId, numberOfReviews, writeReviews, reviewInde
 
       numberOfReviews -= 1;
 
-      reviewOk = writeReviews.write(`${review.id}, ${review.restaurantId}, ${review.reviewerId}, ${review.overall}, ${review.food}, ${review.service}, ${review.ambience}, ${review.dineDate}, ${review.noise}, ${review.recommend}, ${review.filterTag}, ${review.comments} \n`);
+      if (numberOfReviews === -1) {
+        writeReviews.end();
+      } else {
+        reviewOk = writeReviews.write(`${review.id}, ${review.restaurantId}, ${review.reviewerId}, ${review.overall}, ${review.food}, ${review.service}, ${review.ambience}, ${review.dineDate}, ${review.noise}, ${review.recommend}, ${review.filterTag}, ${review.comments} \n`);
+      }
 
     } while (numberOfReviews >= 0 && reviewOk);
 
@@ -98,10 +106,10 @@ async function writeReview(reviewerId, numberOfReviews, writeReviews, reviewInde
 }
 
 
-createReviewersAndReviews(10000000);
+
 
 const createRestaurants = (numberOfRestaurants) => {
-  const writeFile = fs.createWriteStream('Restaurants.csv');
+  const writeFile = fs.createWriteStream('/media/mrclean/WD Black 2TB/CSV/Restaurants.csv');
 
   let restaurantCount = numberOfRestaurants || 100;
   let ok = true;
@@ -130,4 +138,6 @@ const createRestaurants = (numberOfRestaurants) => {
   }
 };
 
+createReviews(150000000);
+createReviewers(10000000);
 createRestaurants(10000000);

@@ -71,7 +71,6 @@ function createReviews(numberOfReviews){
   writeReviewToCSV();
 
   function writeReviewToCSV() {
-
     do {
       let review ={};
       review.restaurantId = Math.floor(Math.random() * 10000000);
@@ -138,6 +137,6 @@ const createRestaurants = (numberOfRestaurants) => {
   }
 };
 
-createReviews(150000000);
-createReviewers(10000000);
-createRestaurants(10000000);
+// createReviews(100000000);
+// createReviewers(10000000);
+// createRestaurants(10000000);

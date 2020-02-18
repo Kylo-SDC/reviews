@@ -1,4 +1,5 @@
--- reviewers
+-- terminal command to ingest data: psql -f database/psql.sql mydb
+-- generic: psql -f <file/to/ingest> <database_to_use>
 
 DROP TABLE IF EXISTS reviewers;
 

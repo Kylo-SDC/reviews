@@ -17,12 +17,11 @@ const allWritesFinished = [false, false];
 
 function createReviewers(NumberOfPeople) {
   let reviewerCount = NumberOfPeople || 100;
-  // const writeReviews = fs.createWriteStream('/media/mrclean/WD Black 2TB/CSV/Reviews.csv');
-  const writeReviewers = fs.createWriteStream('/media/mrclean/WD Black 2TB/CSV/Reviewers.csv');
+  const writeReviewers = fs.createWriteStream('/home/mrclean/HRR43/SDC/reviews/CSV/Reviewers.csv');
   let ok = true;
 
 
-  writeReviewers.write('id, color, vip, reviewCount, firstName, lastName \n');
+  writeReviewers.write('id, color, vip, firstName, lastName \n');
 
 
   writeReviewerToCSV();
@@ -30,7 +29,6 @@ function createReviewers(NumberOfPeople) {
     do {
       let reviewer = {};
       reviewer.id = reviewerCount;
-      reviewer.reviewCount = faker.random.number({min: 1, max: 15})
       reviewer.color = faker.random.arrayElement(circleColors);
       reviewer.vip = Math.random() < 0.3;
       reviewer.firstName = (Math.random() < 0.7) ? faker.name.firstName() : '';
@@ -49,7 +47,7 @@ function createReviewers(NumberOfPeople) {
         writeReviewers.end();
       } else {
         ok = writeReviewers.write(
-          `${reviewer.id}, ${reviewer.color}, ${reviewer.vip}, ${reviewer.reviewCount}, ${reviewer.firstName}, ${reviewer.lastName} \n`
+          `${reviewer.id},${reviewer.color},${reviewer.vip},${reviewer.firstName},${reviewer.lastName}\n`
         );
       }
     } while (reviewerCount >= 0 && ok);
@@ -63,7 +61,7 @@ function createReviewers(NumberOfPeople) {
 
 // re-write to be independent and select random users && random restaurants
 function createReviews(numberOfReviews){
-  const writeReviews = fs.createWriteStream('/media/mrclean/WD Black 2TB/CSV/Reviews.csv');
+  const writeReviews = fs.createWriteStream('/home/mrclean/HRR43/SDC/reviews/CSV/Reviews.csv');
   writeReviews.write(`id, restaurantId, reviewerId, overall, food, service, ambience, dineDate, noise, recommend, filterTag, comments \n`)
   let reviewIndex = 0;
 
@@ -92,7 +90,7 @@ function createReviews(numberOfReviews){
       if (numberOfReviews === -1) {
         writeReviews.end();
       } else {
-        reviewOk = writeReviews.write(`${review.id}, ${review.restaurantId}, ${review.reviewerId}, ${review.overall}, ${review.food}, ${review.service}, ${review.ambience}, ${review.dineDate}, ${review.noise}, ${review.recommend}, ${review.filterTag}, ${review.comments} \n`);
+        reviewOk = writeReviews.write(`${review.id},${review.restaurantId},${review.reviewerId},${review.overall},${review.food},${review.service},${review.ambience},${review.dineDate},${review.noise},${review.recommend},${review.filterTag},${review.comments}\n`);
       }
 
     } while (numberOfReviews >= 0 && reviewOk);
@@ -108,7 +106,7 @@ function createReviews(numberOfReviews){
 
 
 const createRestaurants = (numberOfRestaurants) => {
-  const writeFile = fs.createWriteStream('/media/mrclean/WD Black 2TB/CSV/Restaurants.csv');
+  const writeFile = fs.createWriteStream('/home/mrclean/HRR43/SDC/reviews/CSV/Restaurants.csv');
 
   let restaurantCount = numberOfRestaurants || 100;
   let ok = true;
@@ -126,7 +124,7 @@ const createRestaurants = (numberOfRestaurants) => {
       if (restaurantCount === -1) {
         writeFile.end();
       } else {
-        ok = writeFile.write(`${restaurant.restaurantId}, ${restaurant.city} \n`);
+        ok = writeFile.write(`${restaurant.restaurantId},${restaurant.city}\n`);
       }
 
     } while (restaurantCount >= 0 && ok);
@@ -137,6 +135,6 @@ const createRestaurants = (numberOfRestaurants) => {
   }
 };
 
-// createReviews(100000000);
+createReviews(100000000);
 // createReviewers(10000000);
 // createRestaurants(10000000);

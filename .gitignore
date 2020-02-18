@@ -12,3 +12,4 @@ spec/__snapshot__
 Restaurants.csv
 Reviewers.csv
 Reviews.csv
+.env

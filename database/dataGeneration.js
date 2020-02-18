@@ -2,7 +2,6 @@ const faker = require('faker/locale/en_US');
 const Jabber = require('jabber');
 const moment = require('moment');
 const fs = require('fs');
-const path = require('path');
 
 const buzzWords = ['great food', 'eat', 'service', 'drinks', 'loved', 'never again', 'dessert', 'main menu', 'appetizers', 'enjoyed', 'hated', 'server', 'noise', 'waitress', 'waiter', 'slow', 'fast', 'go again', 'clean', 'dirty', 'kids', 'our group', 'slow service', 'cold food', 'awesome drinks', 'fun time', 'romantic atmosphere', 'dinner', 'lunch', 'breakfast', 'hot plate', 'smelled wonderful', 'no alcohol', 'bartender', 'wine list', 'outdoor seating', 'large room', 'no tips', 'valet parking', 'fine dining', 'dishes', 'shrimp', 'steak', 'chicken', 'beef', 'pasta', 'cake', 'pastries', 'creme brulee', 'simmering', 'coffee', 'fresh food', 'candlelit', 'anniversary', 'birthday', 'party', 'with friends', 'evening', 'stuffed', 'would go again', 'recommend this place', 'restrooms clean', 'host greeting', 'lovely place', 'best view', 'indoor seating', 'waited an hour', 'risotto', 'baked salmon', 'fried rice', 'shrimp scampi', 'sushi', 'wait time'];
 
@@ -18,7 +17,6 @@ const allWritesFinished = [false, false];
 
 function createReviewers(NumberOfPeople) {
   let reviewerCount = NumberOfPeople || 100;
-  // console.log(__dirname);
   const writeReviewers = fs.createWriteStream('/home/mrclean/HRR43/SDC/reviews/CSV/Reviewers.csv');
   let ok = true;
 

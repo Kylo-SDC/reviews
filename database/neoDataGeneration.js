@@ -172,7 +172,7 @@ createRelationshipsBetweenReviewsAndRestaurant = (numberToGenerateRevRest) => {
 };
 
 // createRelationshipsBetweenReviewsAndReviewer(100000000);
-createRelationshipsBetweenReviewsAndRestaurant(100000000);
-// createReviews(100000000);
-// createReviewers(10000000);
-// createRestaurants(10000000);
+// createRelationshipsBetweenReviewsAndRestaurant(100000000);
+createReviews(100000000);
+createReviewers(10000000);
+createRestaurants(10000000);

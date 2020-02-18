@@ -20,34 +20,26 @@ function createReviewers(NumberOfPeople) {
   const writeReviewers = fs.createWriteStream('/home/mrclean/HRR43/SDC/reviews/CSV/Reviewers.csv');
   let ok = true;
 
-
-  writeReviewers.write('id, color, vip, firstName, lastName \n');
-
-
   writeReviewerToCSV();
   function writeReviewerToCSV() {
     do {
-      let reviewer = {};
-      reviewer.id = reviewerCount;
-      reviewer.color = faker.random.arrayElement(circleColors);
-      reviewer.vip = Math.random() < 0.3;
-      reviewer.firstName = (Math.random() < 0.7) ? faker.name.firstName() : '';
-      if (reviewer.firstName.length) {
-        reviewer.lastName = (Math.random() < 0.7) ? faker.name.lastName() : '';
+      let id = reviewerCount;
+      let color = faker.random.arrayElement(circleColors);
+      let vip = Math.random() < 0.3;
+      let firstName = (Math.random() < 0.7) ? faker.name.firstName() : '';
+      let lastName;
+      if (firstName.length) {
+        lastName = (Math.random() < 0.7) ? faker.name.lastName() : '';
       } else {
-        reviewer.lastName = '';
+        lastName = '';
       }
       reviewerCount -= 1;
-
-      ///////////////////////////////////////////
-
-      // await writeReview(reviewer.id, reviewer.reviewCount, writeReviews);
 
       if (reviewerCount === -1) {
         writeReviewers.end();
       } else {
         ok = writeReviewers.write(
-          `${reviewer.id},${reviewer.color},${reviewer.vip},${reviewer.firstName},${reviewer.lastName}\n`
+          `${id},${color},${vip},${firstName},${lastName}\n`
         );
       }
     } while (reviewerCount >= 0 && ok);
@@ -62,7 +54,7 @@ function createReviewers(NumberOfPeople) {
 // re-write to be independent and select random users && random restaurants
 function createReviews(numberOfReviews){
   const writeReviews = fs.createWriteStream('/home/mrclean/HRR43/SDC/reviews/CSV/Reviews.csv');
-  writeReviews.write(`id, restaurantId, reviewerId, overall, food, service, ambience, dineDate, noise, recommend, filterTag, comments \n`)
+  // writeReviews.write(`id, restaurantId, reviewerId, overall, food, service, ambience, dineDate, noise, recommend, filterTag, comments\n`)
   let reviewIndex = 0;
 
   let reviewOk = true;
@@ -70,19 +62,15 @@ function createReviews(numberOfReviews){
 
   function writeReviewToCSV() {
     do {
-      let review ={};
-      review.restaurantId = Math.floor(Math.random() * 10000000);
-      review.reviewerId =  Math.floor(Math.random() * 10000000);
-      review.id = reviewIndex;
-      review.overall = faker.random.number({min:1, max: 5});
-      review.food = faker.random.number({min:1, max: 5});
-      review.service = faker.random.number({min:1, max: 5});
-      review.ambience = faker.random.number({min:1, max: 5});
-      review.dineDate = moment(faker.date.between('2019-01-01', '2020-01-24')).format('YYYY-MM-DD');
-      review.noise = faker.random.number({min:1, max: 5});
-      review.recommend = Math.random() < 0.7;
-      review.comments = jabber.createParagraph(faker.random.number({min:10, max: 50}));
-      review.filterTag = faker.random.arrayElement(tags);
+      let id = reviewIndex;
+      let overall = faker.random.number({min:1, max: 5});
+      let food = faker.random.number({min:1, max: 5});
+      let service = faker.random.number({min:1, max: 5});
+      let ambience = faker.random.number({min:1, max: 5});
+      let noise = faker.random.number({min:1, max: 5});
+      let recommend = Math.random() < 0.7;
+      let comments = jabber.createParagraph(faker.random.number({min:10, max: 50}));
+
       reviewIndex += 1;
 
       numberOfReviews -= 1;
@@ -90,9 +78,8 @@ function createReviews(numberOfReviews){
       if (numberOfReviews === -1) {
         writeReviews.end();
       } else {
-        reviewOk = writeReviews.write(`${review.id},${review.restaurantId},${review.reviewerId},${review.overall},${review.food},${review.service},${review.ambience},${review.dineDate},${review.noise},${review.recommend},${review.filterTag},${review.comments}\n`);
+        reviewOk = writeReviews.write(`${id},${overall},${food},${service},${ambience},${noise},${recommend},${comments}\n`);
       }
-
     } while (numberOfReviews >= 0 && reviewOk);
 
     if (numberOfReviews > 0) {
@@ -102,31 +89,24 @@ function createReviews(numberOfReviews){
   return numberOfReviews;
 }
 
-
-
-
 const createRestaurants = (numberOfRestaurants) => {
   const writeFile = fs.createWriteStream('/home/mrclean/HRR43/SDC/reviews/CSV/Restaurants.csv');
 
   let restaurantCount = numberOfRestaurants || 100;
   let ok = true;
 
-  writeFile.write(`id, city \n`)
-
   writeToCSV();
   function writeToCSV() {
     do {
-      let restaurant = {};
-      restaurant.city = faker.address.city();
-      restaurant.restaurantId = restaurantCount;
+      let city = faker.address.city();
+      let restaurantId = restaurantCount;
       restaurantCount -= 1;
 
       if (restaurantCount === -1) {
         writeFile.end();
       } else {
-        ok = writeFile.write(`${restaurant.restaurantId},${restaurant.city}\n`);
+        ok = writeFile.write(`${restaurantId},${city}\n`);
       }
-
     } while (restaurantCount >= 0 && ok);
 
     if (restaurantCount > 0) {
@@ -135,6 +115,64 @@ const createRestaurants = (numberOfRestaurants) => {
   }
 };
 
-createReviews(100000000);
+
+createRelationshipsBetweenReviewsAndReviewer = (numberToGenerateRevRev) => {
+  // :START_ID, date written, :END_ID, :TYPE
+  // idOfReviewer, type-tag, idOfReview, WRITTEN_BY
+  const writeReviewReviewerRelationships = fs.createWriteStream('/home/mrclean/HRR43/SDC/reviews/CSV/ReviewReviewerRelationships.csv');
+
+
+  writeReviewReviewerCSV();
+  function writeReviewReviewerCSV() {
+    do {
+      let reviewerId =  Math.floor(Math.random() * 10000000);
+      let dineDate = moment(faker.date.between('2019-01-01', '2020-01-24')).format('YYYY-MM-DD');
+      numberToGenerateRevRev -= 1;
+
+      if (numberToGenerateRevRev === -1) {
+        writeReviewReviewerRelationships.end();
+      } else {
+        ok = writeReviewReviewerRelationships.write(`${reviewerId},${dineDate},${numberToGenerateRevRev},WRITTEN_BY\n`);
+      }
+    } while (numberToGenerateRevRev >= 0 && ok);
+
+    if (numberToGenerateRevRev > 0) {
+      writeReviewReviewerRelationships.once('drain', writeReviewReviewerCSV);
+    }
+  }
+};
+
+
+createRelationshipsBetweenReviewsAndRestaurant = (numberToGenerateRevRest) => {
+  // :START_ID, type-tag, :END_ID, :TYPE
+  // idOfReview, tag, idOfRestaurant, TAGGED_AS
+  const writeReviewRestaurantRelationships = fs.createWriteStream('/home/mrclean/HRR43/SDC/reviews/CSV/ReviewRestaurantRelationships.csv');
+
+  numberToGenerateRevRest += 1;
+
+  writeReviewRestaurantCSV();
+  function writeReviewRestaurantCSV() {
+    do {
+      let restaurantId = Math.floor(Math.random() * 10000000);
+      let dineDate = moment(faker.date.between('2019-01-01', '2020-01-24')).format('YYYY-MM-DD');
+      let filterTag = faker.random.arrayElement(tags);
+      numberToGenerateRevRest -= 1;
+
+      if (numberToGenerateRevRest === 0) {
+        writeReviewRestaurantRelationships.end();
+      } else {
+        ok = writeReviewRestaurantRelationships.write(`${numberToGenerateRevRest},${filterTag},${restaurantId},TAGGED_AS\n`);
+      }
+    } while (numberToGenerateRevRest > 0 && ok);
+
+    if (numberToGenerateRevRest > 0) {
+      writeReviewRestaurantRelationships.once('drain', writeReviewRestaurantCSV);
+    }
+  }
+};
+
+// createRelationshipsBetweenReviewsAndReviewer(100000000);
+createRelationshipsBetweenReviewsAndRestaurant(100000000);
+// createReviews(100000000);
 // createReviewers(10000000);
 // createRestaurants(10000000);

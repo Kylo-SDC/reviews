@@ -1,1 +1,1 @@
-restaurantId:ID(Restaurant),city
+restaurantId:ID(Restaurant),city:string

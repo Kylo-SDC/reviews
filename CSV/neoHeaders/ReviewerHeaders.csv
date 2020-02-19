@@ -1,1 +1,1 @@
-reviewerId:ID(Reviewer),color,vip,firstName,lastName
+reviewerId:ID(Reviewer),color:string,vip:boolean,firstName:string,lastName:string

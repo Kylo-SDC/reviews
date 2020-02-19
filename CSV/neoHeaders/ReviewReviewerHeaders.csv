@@ -1,1 +1,1 @@
-:START_ID(Reviewer),tag:string,:END_ID(Review),:TYPE
+:START_ID(Reviewer),date:string,:END_ID(Review),:TYPE

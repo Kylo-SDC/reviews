@@ -134,7 +134,7 @@ createRelationshipsBetweenReviewsAndReviewer = (numberToGenerateRevRev) => {
       if (numberToGenerateRevRev === 0) {
         writeReviewReviewerRelationships.end();
       } else {
-        ok = writeReviewReviewerRelationships.write(`${reviewerId},${dineDate},${numberToGenerateRevRev},WRITTEN_BY\n`);
+        ok = writeReviewReviewerRelationships.write(`${reviewerId},${dineDate},${numberToGenerateRevRev},WROTE\n`);
       }
     } while (numberToGenerateRevRev > 0 && ok);
 

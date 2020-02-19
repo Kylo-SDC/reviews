@@ -1,1 +1,1 @@
-:START_ID(Review),date:string,:END_ID(Restaurant),:TYPE
+:START_ID(Review),tag:string,:END_ID(Restaurant),:TYPE

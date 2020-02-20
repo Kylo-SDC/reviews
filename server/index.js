@@ -3,7 +3,8 @@ const express = require('express');
 const app = express();
 const PORT = 3300;
 // const db = require('../database/mongo');
-const db = require('../database/postgres');
+// const db = require('../database/postgres');
+const db = require('../database/neo4j');
 var cors = require('cors');
 
 app.use(express.static('./public'));

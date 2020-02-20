@@ -17,8 +17,8 @@ const allWritesFinished = [false, false];
 
 function createReviewers(NumberOfPeople) {
   let reviewerCount = NumberOfPeople || 100;
-  const writeReviewers = fs.createWriteStream('/home/mrclean/HRR43/SDC/reviews/CSV/Reviewers.csv');
-  let ok = true;
+  const writeReviewers = fs.createWriteStream(process.env.REVIEWERS_URL);
+  let canWrite = true;
 
   writeReviewerToCSV();
   function writeReviewerToCSV() {
@@ -38,11 +38,11 @@ function createReviewers(NumberOfPeople) {
       if (reviewerCount === -1) {
         writeReviewers.end();
       } else {
-        ok = writeReviewers.write(
+        canWrite = writeReviewers.write(
           `${id},${color},${vip},${firstName},${lastName}\n`
         );
       }
-    } while (reviewerCount >= 0 && ok);
+    } while (reviewerCount >= 0 && canWrite);
 
     if (reviewerCount > 0) {
       writeReviewers.once('drain', writeReviewerToCSV);
@@ -53,11 +53,11 @@ function createReviewers(NumberOfPeople) {
 
 // re-write to be independent and select random users && random restaurants
 function createReviews(numberOfReviews){
-  const writeReviews = fs.createWriteStream('/home/mrclean/HRR43/SDC/reviews/CSV/Reviews.csv');
+  const writeReviews = fs.createWriteStream(process.env.REVIEWS_URL);
   // writeReviews.write(`id, restaurantId, reviewerId, overall, food, service, ambience, dineDate, noise, recommend, filterTag, comments\n`)
   let reviewIndex = 1;
 
-  let reviewOk = true;
+  let canWrite = true;
   writeReviewToCSV();
 
   function writeReviewToCSV() {
@@ -78,10 +78,10 @@ function createReviews(numberOfReviews){
       if (numberOfReviews === -1) {
         writeReviews.end();
       } else {
-        reviewOk = writeReviews.write(`${id},${overall},${food},${service},${ambience},${noise},${recommend},${comments}\n`);
+        canWrite = writeReviews.write(`${id},${overall},${food},${service},${ambience},${noise},${recommend},${comments}\n`);
       }
       //
-    } while (numberOfReviews >= 0 && reviewOk);
+    } while (numberOfReviews >= 0 && canWrite);
 
     if (numberOfReviews > 0) {
       writeReviews.once('drain', writeReviewToCSV);
@@ -91,10 +91,10 @@ function createReviews(numberOfReviews){
 }
 
 const createRestaurants = (numberOfRestaurants) => {
-  const writeFile = fs.createWriteStream('/home/mrclean/HRR43/SDC/reviews/CSV/Restaurants.csv');
+  const writeFile = fs.createWriteStream(process.env.RESTAURANTS_URL);
 
   let restaurantCount = numberOfRestaurants || 100;
-  let ok = true;
+  let canWrite = true;
 
   writeToCSV();
   function writeToCSV() {
@@ -106,9 +106,9 @@ const createRestaurants = (numberOfRestaurants) => {
       if (restaurantCount === -1) {
         writeFile.end();
       } else {
-        ok = writeFile.write(`${restaurantId},${city}\n`);
+        canWrite = writeFile.write(`${restaurantId},${city}\n`);
       }
-    } while (restaurantCount >= 0 && ok);
+    } while (restaurantCount >= 0 && canWrite);
 
     if (restaurantCount > 0) {
       writeFile.once('drain', writeToCSV);
@@ -120,8 +120,9 @@ const createRestaurants = (numberOfRestaurants) => {
 createRelationshipsBetweenReviewsAndReviewer = (numberToGenerateRevRev) => {
   // :START_ID, date written, :END_ID, :TYPE
   // idOfReviewer, type-tag, idOfReview, WRITTEN_BY
-  const writeReviewReviewerRelationships = fs.createWriteStream('/home/mrclean/HRR43/SDC/reviews/CSV/ReviewReviewerRelationships.csv');
+  const writeReviewReviewerRelationships = fs.createWriteStream(process.env.REVIEWS_REVIEWER_URL);
   numberToGenerateRevRev += 1;
+  let canWrite = true;
 
   writeReviewReviewerCSV();
   function writeReviewReviewerCSV() {
@@ -134,9 +135,9 @@ createRelationshipsBetweenReviewsAndReviewer = (numberToGenerateRevRev) => {
       if (numberToGenerateRevRev === 0) {
         writeReviewReviewerRelationships.end();
       } else {
-        ok = writeReviewReviewerRelationships.write(`${reviewerId},${dineDate},${numberToGenerateRevRev},WROTE\n`);
+        canWrite = writeReviewReviewerRelationships.write(`${reviewerId},${dineDate},${numberToGenerateRevRev},WROTE\n`);
       }
-    } while (numberToGenerateRevRev > 0 && ok);
+    } while (numberToGenerateRevRev > 0 && canWrite);
 
     if (numberToGenerateRevRev > 0) {
       writeReviewReviewerRelationships.once('drain', writeReviewReviewerCSV);
@@ -148,7 +149,8 @@ createRelationshipsBetweenReviewsAndReviewer = (numberToGenerateRevRev) => {
 createRelationshipsBetweenReviewsAndRestaurant = (numberToGenerateRevRest) => {
   // :START_ID, type-tag, :END_ID, :TYPE
   // idOfReview, tag, idOfRestaurant, TAGGED_AS
-  const writeReviewRestaurantRelationships = fs.createWriteStream('/home/mrclean/HRR43/SDC/reviews/CSV/ReviewRestaurantRelationships.csv');
+  const writeReviewRestaurantRelationships = fs.createWriteStream(process.env.REVIEWS_RESTAURANT_URL);
+  let canWrite = true;
 
   numberToGenerateRevRest += 1;
 
@@ -163,9 +165,9 @@ createRelationshipsBetweenReviewsAndRestaurant = (numberToGenerateRevRest) => {
       if (numberToGenerateRevRest === 0) {
         writeReviewRestaurantRelationships.end();
       } else {
-        ok = writeReviewRestaurantRelationships.write(`${numberToGenerateRevRest},${filterTag},${restaurantId},TAGGED_AS\n`);
+        canWrite = writeReviewRestaurantRelationships.write(`${numberToGenerateRevRest},${filterTag},${restaurantId},TAGGED_AS\n`);
       }
-    } while (numberToGenerateRevRest > 0 && ok);
+    } while (numberToGenerateRevRest > 0 && canWrite);
 
     if (numberToGenerateRevRest > 0) {
       writeReviewRestaurantRelationships.once('drain', writeReviewRestaurantCSV);
@@ -173,7 +175,7 @@ createRelationshipsBetweenReviewsAndRestaurant = (numberToGenerateRevRest) => {
   }
 };
 
-createRelationshipsBetweenReviewsAndReviewer(100000000);
+// createRelationshipsBetweenReviewsAndReviewer(100000000);
 // createRelationshipsBetweenReviewsAndRestaurant(100000000);
 // createReviews(100000000);
 // createReviewers(10000000);

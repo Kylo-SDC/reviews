@@ -19,3 +19,30 @@
     "__v": 0
   }
 ]
+
+PostgreSQL config
+
+  *restaurants
+    -id
+    -city
+
+  *reviews
+    -id
+    -restaurantid
+    -reviewerid
+    -overall
+    -food
+    -service
+    -ambience
+    -dineDate
+    -noise
+    -recommend
+    -filtertag
+    -comments
+
+  *reviewers
+    -id
+    -firstname
+    -lastname
+    -color
+    -vip

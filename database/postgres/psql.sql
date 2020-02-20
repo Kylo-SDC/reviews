@@ -12,7 +12,7 @@ CREATE TABLE reviewers (
 );
 
 COPY reviewers(id, color, vip, firstName, lastName)
-FROM '/home/mrclean/HRR43/SDC/reviews/CSV/Reviewers.csv' DELIMITER ',' CSV HEADER;
+FROM '/home/mrclean/HRR43/SDC/reviews/CSV/Reviewers.csv' DELIMITER ',' CSV HEADER; --// removing for Neo4j may not add back
 
 
 DROP TABLE IF EXISTS restaurants;
@@ -23,7 +23,7 @@ CREATE TABLE restaurants (
 );
 
 COPY restaurants (id, city)
-FROM '/home/mrclean/HRR43/SDC/reviews/CSV/Restaurants.csv' DELIMITER ',' CSV HEADER;
+FROM '/home/mrclean/HRR43/SDC/reviews/CSV/Restaurants.csv' DELIMITER ',' CSV HEADER; --  // removing for Neo4j, may not add back
 
 DROP TABLE IF EXISTS reviews;
 
@@ -44,4 +44,4 @@ CREATE TABLE reviews (
 
 
 COPY reviews (id, restaurantId, reviewerId, overall, food, service, ambience, dineDate, noise, recommend, filterTag, comments)
-FROM '/home/mrclean/HRR43/SDC/reviews/CSV/Reviews.csv' DELIMITER ',' CSV HEADER;
+FROM '/home/mrclean/HRR43/SDC/reviews/CSV/Reviews.csv' DELIMITER ',' CSV HEADER; --  // removing for Neo4j, may not add back

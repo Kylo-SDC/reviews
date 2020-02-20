@@ -1,6 +1,6 @@
 // database code
 const mongoose = require('mongoose');
-const reviewSchema = require('./schema.js');
+const reviewSchema = require('./mongoSchema.js');
 
 const mongoUri = 'mongodb://localhost/reviews';
 mongoose.Promise = global.Promise;

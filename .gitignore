@@ -9,7 +9,9 @@ oldeslintrc.js
 reactHooksSample.jsx
 coverage
 spec/__snapshot__
-Restaurants.csv
-Reviewers.csv
-Reviews.csv
+CSV/Restaurants.csv
+CSV/Reviewers.csv
+CSV/Reviews.csv
+CSV/ReviewRestaurantRelationships.csv
+CSV/ReviewReviewerRelationships.csv
 .env

@@ -4,8 +4,10 @@ const { Pool } = require('pg');
 // const copyFrom = require('pg-copy-streams').from;
 
 const connectionString = process.env.POSTGRES_CONNECTION_STRING;
-console.log(connectionString);
+// console.log(connectionString);
 
-module.exports.pool = new Pool({
+const pool = new Pool({
   connectionString: connectionString,
 });
+
+module.exports = pool;

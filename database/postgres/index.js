@@ -1,15 +1,44 @@
 const pool = require('./db');
 
-exports.getRestaurantReviews = (restaurantId) => {
-  pool
+exports.getRestaurantReviews = ({ restaurantId }) => {
+  return pool
   .connect()
   .then(client => {
     return client
-      // same as what was being sent to db before
-      .query('SELECT  FROM users WHERE id = $1', [1])
-      .then(res => {
-        client.release()
-        console.log(res.rows[0])
+      .query(
+        `SELECT
+          restaurants.id,
+          restaurants.city,
+          reviews.id,
+          reviews.overall,
+          reviews.food,
+          reviews.service,
+          reviews.ambience,
+          reviews.dineDate,
+          reviews.noise,
+          reviews.recommend,
+          reviews.filtertag,
+          reviews.comments,
+          reviews.id,
+          reviewers.id,
+          reviewers.firstname,
+          reviewers.lastname,
+          reviewers.color,
+          reviewers.vip
+        FROM
+          restaurants,
+          reviews,
+          reviewers
+        WHERE
+          restaurants.id = $1
+        AND
+          reviews.restaurantid = $1
+        And
+          reviewers.id = reviews.reviewerid
+        `, [restaurantId])
+      .then(restaurantsAndReviews => {
+        client.release();
+        return restaurantsAndReviews.rows;
       })
       .catch(err => {
         client.release()
@@ -18,7 +47,8 @@ exports.getRestaurantReviews = (restaurantId) => {
   })
 };
 
-exports.getSortedRestaurantReviews = () => {
+// may have to come back to this
+exports.getSortedRestaurantReviews = ({sortField, sorting, restaurantId, list}) => {
   pool
   .connect()
   .then(client => {

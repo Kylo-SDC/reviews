@@ -64,7 +64,7 @@ module.exports.getSortedRestaurantReviews = ({ restaurantId, list, sorting }) =>
   list.length ? tags = list : tags = ['Good for groups', 'Desserts', 'Appetizers', 'Drinks', 'Kid friendly'];
 
   if (sorting === 'Highest') {
-    return db
+    return session
       .run(
         `MATCH (rest:Restaurant)<-[r]-(rev:Review)<-[r2]-(reviewer:Reviewer)
         WHERE rest.restaurantId = $restaurantId AND r.tag IN $tags
@@ -117,7 +117,7 @@ module.exports.getSortedRestaurantReviews = ({ restaurantId, list, sorting }) =>
       })
   } else if (sorting === 'Lowest') {
     sortBy = `rev.overall`;
-    return db
+    return session
       .run(
         `MATCH (rest:Restaurant)<-[r]-(rev:Review)<-[r2]-(reviewer:Reviewer)
         WHERE rest.restaurantId = $restaurantId AND r.tag IN $tags
@@ -169,7 +169,7 @@ module.exports.getSortedRestaurantReviews = ({ restaurantId, list, sorting }) =>
         console.log(error);
       })
   } else {
-    return db
+    return session
       .run(
         `MATCH (rest:Restaurant)<-[r]-(rev:Review)<-[r2]-(reviewer:Reviewer)
         WHERE rest.restaurantId = $restaurantId AND r.tag IN $tags

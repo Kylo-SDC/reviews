@@ -1,9 +1,12 @@
-const db = require('./db');
+const { driver } = require('./db');
+
+
 
 module.exports.getRestaurantReviews = ({ restaurantId }) => {
+  const session = driver.session();
   // let restString = restaurantId.toString();
   // console.log(restaurantId);
-  return db
+  return session
     .run(`MATCH (rest:Restaurant)<-[r]-(rev:Review)<-[r2]-(reviewer:Reviewer)
           WHERE rest.restaurantId = $restaurantId
           MATCH (reviewer)-->(revCount:Review)
@@ -30,6 +33,7 @@ module.exports.getRestaurantReviews = ({ restaurantId }) => {
             // will need subquery for number of reviews in db
           {restaurantId: restaurantId.toString()})
     .then((reviews) => {
+      session.close();
       let reviewsArr = [];
 
       for (let i = 0; i < reviews.records.length; i++) {
@@ -54,6 +58,7 @@ module.exports.getRestaurantReviews = ({ restaurantId }) => {
 };
 
 module.exports.getSortedRestaurantReviews = ({ restaurantId, list, sorting }) => {
+  const session = driver.session();
   let tags ;
   let sortBy;
   list.length ? tags = list : tags = ['Good for groups', 'Desserts', 'Appetizers', 'Drinks', 'Kid friendly'];
@@ -86,6 +91,7 @@ module.exports.getSortedRestaurantReviews = ({ restaurantId, list, sorting }) =>
         ORDER BY overall DESC`,
         {restaurantId: restaurantId.toString(), tags: tags})
       .then((reviews) => {
+        session.close();
         let reviewsArr = [];
         // console.log(reviews);
         // reviews.records.forEach(r => console.log(r._fields[9]));
@@ -138,6 +144,7 @@ module.exports.getSortedRestaurantReviews = ({ restaurantId, list, sorting }) =>
         ORDER BY overall`,
         { restaurantId: restaurantId.toString(), tags: tags})
       .then((reviews) => {
+        session.close();
         let reviewsArr = [];
         // console.log(reviews);
         // reviews.records.forEach(r => console.log(r._fields[9]));
@@ -189,6 +196,7 @@ module.exports.getSortedRestaurantReviews = ({ restaurantId, list, sorting }) =>
         ORDER BY dineDate DESC`,
         { restaurantId: restaurantId.toString(), tags: tags})
       .then((reviews) => {
+        session.close();
         let reviewsArr = [];
         // console.log(reviews);
         // reviews.records.forEach(r => console.log(r._fields[9]));

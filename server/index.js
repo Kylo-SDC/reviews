@@ -1,3 +1,6 @@
+require('dotenv').config();
+require('newrelic');
+
 const express = require('express');
 
 const app = express();
@@ -27,10 +30,9 @@ app.get('/:restaurantId/', (req, res) => {
 
 app.get('/sort/:id/:sorting/:list/', (req, res) => {
   const list = JSON.parse(req.params.list);
-  console.log(list);
-  let sortField = (req.params.sorting === 'Highest') ? '-overall' : 'overall';
+  // let sortField = (req.params.sorting === 'Highest') ? '-overall' : 'overall';
   db.getSortedRestaurantReviews({
-    sortField: sortField,
+    // sortField: sortField,
     sorting: req.params.sorting,
     restaurantId: req.params.id,
     list: list,

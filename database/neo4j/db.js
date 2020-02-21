@@ -7,5 +7,3 @@ const driver = neo4j.driver(
 );
 
 module.exports = driver.session();
-
-// module.exports.session;

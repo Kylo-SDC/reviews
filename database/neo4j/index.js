@@ -1,7 +1,5 @@
 const { driver } = require('./db');
 
-
-
 module.exports.getRestaurantReviews = ({ restaurantId }) => {
   const session = driver.session();
   // let restString = restaurantId.toString();
@@ -51,10 +49,7 @@ module.exports.getRestaurantReviews = ({ restaurantId }) => {
         reviewsArr.push(review);
       }
       return reviewsArr;
-    })
-    .catch((error) => {
-      console.log(error);
-    })
+    });
 };
 
 module.exports.getSortedRestaurantReviews = ({ restaurantId, list, sorting }) => {
@@ -111,10 +106,7 @@ module.exports.getSortedRestaurantReviews = ({ restaurantId, list, sorting }) =>
         }
         // console.log(reviewsArr);
         return reviewsArr;
-      })
-      .catch((error) => {
-        console.log(error);
-      })
+      });
   } else if (sorting === 'Lowest') {
     sortBy = `rev.overall`;
     return session
@@ -164,10 +156,7 @@ module.exports.getSortedRestaurantReviews = ({ restaurantId, list, sorting }) =>
         }
         // console.log(reviewsArr);
         return reviewsArr;
-      })
-      .catch((error) => {
-        console.log(error);
-      })
+      });
   } else {
     return session
       .run(
@@ -216,9 +205,60 @@ module.exports.getSortedRestaurantReviews = ({ restaurantId, list, sorting }) =>
         }
         // console.log(reviewsArr);
         return reviewsArr;
-      })
-      .catch((error) => {
-        console.log(error);
-      })
+      });
   }
 };
+
+module.exports.addOneReview = (newReview) => {
+  const session = driver.session();
+  let {
+    restaurantId,
+    reviewerId,
+    comments,
+    ambiance,
+    service,
+    noise,
+    overall,
+    recomment,
+    food,
+    date,
+    tag,
+    reviewId,
+  } = newReview;
+
+  return session
+    .run(`
+      MATCH (rest:Restaurant), (reviewer:Reviewer)
+      WHERE rest.restaurantId = $restaurantId AND reviewer.reviewerId = $reviewerId
+      CREATE (reviewer)-[:WRITTEN_BY {date: $date}]->(review:Review {
+        comments: $comments,
+        ambiance: $ambiance,
+        service: $service,
+        noise: $noise,
+        overall: $overall,
+        recomment: $recomment,
+        food: $food,
+        reviewId: $reviewId
+      })-[:TAGGED_AS {tag: $tag}]->(rest)
+      RETURN review
+      `,
+      {
+        restaurantId: restaurantId.toString(),
+        date: date,
+        reviewerId: reviewerId,
+        comments: comments,
+        ambiance: ambiance,
+        service: service,
+        noise: noise,
+        overall: overall,
+        recomment: recomment,
+        food: food,
+        date: date,
+        tag: tag,
+        reviewId: reviewId
+      })
+    .then((newReview) => {
+      session.close();
+      return newReview.records[0]._fields[0].properties;
+    });
+}

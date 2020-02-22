@@ -30,9 +30,7 @@ app.get('/:restaurantId/', (req, res) => {
 
 app.get('/sort/:id/:sorting/:list/', (req, res) => {
   const list = JSON.parse(req.params.list);
-  // let sortField = (req.params.sorting === 'Highest') ? '-overall' : 'overall';
   db.getSortedRestaurantReviews({
-    // sortField: sortField,
     sorting: req.params.sorting,
     restaurantId: req.params.id,
     list: list,
@@ -47,6 +45,7 @@ app.get('/sort/:id/:sorting/:list/', (req, res) => {
 
 app.post('/api/reviews', (req, res) => {
   const newReview = req.body;
+  // newReview = {}
   db.addOneReview(newReview)
     .then((addedReview) => {
       res.status(201).json(addedReview);

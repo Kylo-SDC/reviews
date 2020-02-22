@@ -1,9 +1,13 @@
+require('dotenv').config();
+require('newrelic');
+
 const express = require('express');
 
 const app = express();
 const PORT = 3300;
 // const db = require('../database/mongo');
-const db = require('./database/postgres');
+// const db = require('../database/postgres');
+const db = require('../database/neo4j');
 var cors = require('cors');
 
 app.use(express.static('./public'));
@@ -26,9 +30,9 @@ app.get('/:restaurantId/', (req, res) => {
 
 app.get('/sort/:id/:sorting/:list/', (req, res) => {
   const list = JSON.parse(req.params.list);
-  let sortField = (req.params.sorting === 'Highest') ? '-overall' : 'overall';
+  // let sortField = (req.params.sorting === 'Highest') ? '-overall' : 'overall';
   db.getSortedRestaurantReviews({
-    sortField: sortField,
+    // sortField: sortField,
     sorting: req.params.sorting,
     restaurantId: req.params.id,
     list: list,

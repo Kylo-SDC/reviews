@@ -12,7 +12,7 @@ var cors = require('cors');
 
 app.use(express.static('./public'));
 
-app.use('/781653508da1149f188dadf547aa46a7.png', express.static('./public/781653508da1149f188dadf547aa46a7.png'));
+// app.use('/781653508da1149f188dadf547aa46a7.png', express.static('./public/781653508da1149f188dadf547aa46a7.png'));
 
 app.use(express.json());
 app.use(cors());

@@ -13,7 +13,7 @@ const App = () => {
   const id = urlParams.get('id');
 
   useEffect(() => {
-    axios.get(`/${id}`)
+    axios.get(`/reviews/${id}`)
       .then((result) => {
         setReviews(result.data);
       })
@@ -22,13 +22,13 @@ const App = () => {
 
   const sortReviews = (sort, list) => {
     if ((!sort || sort === 'Newest') && !list.length) {
-      axios.get(`/${id}`)
+      axios.get(`/reviews/${id}`)
         .then((result) => {
           setReviews(result.data);
         })
         .catch((err) => console.log('error ', err));
     } else {
-      axios.get(`/sort/${id}/${sort || 0}/${JSON.stringify(list)}`)
+      axios.get(`/reviews/sort/${id}/${sort || 0}/${JSON.stringify(list)}`)
         .then((result) => {
           setReviews(result.data);
         })

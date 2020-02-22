@@ -8,7 +8,7 @@ const checkDate = date.setDate(date.getDate() - 30);
 
 const Reviews = ({ reviews }) => {
   const list = reviews.map((review) => (
-    <div key={review._id} className="review">
+    <div key={review.reviewId} className="review">
       <div className="review-user">
         <div className="user-box">
           <div className="user-circle" style={{ background: review.color }}>
@@ -27,7 +27,7 @@ const Reviews = ({ reviews }) => {
           {review.city}
         </div>
         <div className="user-num-reviews">
-          <img className="msg-icon" src={msgIcon} alt="icon" />
+          <img className="msg-icon" src="images/781653508da1149f188dadf547aa46a7.png" alt="icon" />
           {review.numReviews}
           {' '}
           {review.numReviews > 1 ? 'reviews' : 'review'}

@@ -50,61 +50,38 @@ export default function() {
     "status was 200": (r) => r.status == 200,
     "transaction time OK": (r) => r.timings.duration < 2000
   });
-
-  // check that an id was returned
   check(responses[1], {
     "status was 201": (r) => r.status == 201,
     "transaction time OK": (r) => r.timings.duration < 2000
   });
-
 };
 
-// export default function() {
-//     let randomId = Math.floor(Math.random() * 1000000);
+export default function() {
+    let randomId = Math.floor(Math.random() * 1000000);
 
-//     let req1 = {
-//       method: 'GET',
-//       url: `http://localhost:3300/${randomId}`,
-//       tags: {name: 'GET RestaurantId'},
-//     };
+    let req1 = {
+      method: 'GET',
+      url: `http://localhost:3300/${randomId}`,
+      tags: {name: 'GET RestaurantId'},
+    };
 
-    // let sortOptions = ['Good for groups', 'Desserts', 'Appetizers', 'Drinks', 'Kid friendly'];
-    // let sortBy = JSON.stringify([sortOptions[Math.round(Math.random() * 4)]]);
+    let sortOptions = ['Good for groups', 'Desserts', 'Appetizers', 'Drinks', 'Kid friendly'];
+    let sortBy = JSON.stringify([sortOptions[Math.round(Math.random() * 4)]]);
 
-//     let req2 = {
-//       method: `GET`,
-//       url: `http://localhost:3300/sort/${randomId}/0/${sortBy}`,
-//       tags: {name: 'GET sortedReviews'},
-//     };
+    let req2 = {
+      method: `GET`,
+      url: `http://localhost:3300/sort/${randomId}/0/${sortBy}`,
+      tags: {name: 'GET sortedReviews'},
+    };
 
-//     let post3 = {
-//       method: `POST`,
-//       url: `http://localhost:3300/api/reviews`,
-//       body: {
-//         restaurantId: 10000002,
-//         comments:
-//         ambiance:
-//         service:
-//         noise:
-//         overall:
-//         recomment:
-//         food:
-//         date:
-//         firstName:
-//         lastName:
-//         color:
-//         vip:
-//       }
-//     }
+    let responses = http.batch( [req1, req2]);
 
-//     let responses = http.batch( [req1, req2, req3]);
-
-//     check(responses[0], {
-//       "status was 200": (r) => r.status == 200,
-//       "transaction time OK": (r) => r.timings.duration < 2000
-//     });
-//     check(responses[1], {
-//       "status was 200": (r) => r.status == 200,
-//       "transaction time OK": (r) => r.timings.duration < 2000
-//     });
-// };
+    check(responses[0], {
+      "status was 200": (r) => r.status == 200,
+      "transaction time OK": (r) => r.timings.duration < 2000
+    });
+    check(responses[1], {
+      "status was 200": (r) => r.status == 200,
+      "transaction time OK": (r) => r.timings.duration < 2000
+    });
+};

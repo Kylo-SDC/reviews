@@ -4,21 +4,27 @@ require('newrelic');
 const express = require('express');
 
 const app = express();
-const PORT = 3300;
+const port = process.env.REVIEWS_PORT || 3300;
 // const db = require('../database/mongo');
 // const db = require('../database/postgres');
 const db = require('../database/neo4j');
 var cors = require('cors');
 
 app.use(express.static('./public'));
+
+app.use('/781653508da1149f188dadf547aa46a7.png', express.static('./public/781653508da1149f188dadf547aa46a7.png'));
+
 app.use(express.json());
 app.use(cors());
 
-app.listen(PORT, () => {
-  console.log('Listening on port ', PORT);
+app.listen(port, () => {
+  console.log('Listening on port ', port);
 });
 
-app.get('/:restaurantId/', (req, res) => {
+
+
+app.get('/reviews/:restaurantId', (req, res) => {
+  console.log(req.params);
   db.getRestaurantReviews(req.params)
     .then((data) => {
       res.status(200).send(data);
@@ -28,11 +34,9 @@ app.get('/:restaurantId/', (req, res) => {
     });
 });
 
-app.get('/sort/:id/:sorting/:list/', (req, res) => {
+app.get('/reviews/sort/:id/:sorting/:list', (req, res) => {
   const list = JSON.parse(req.params.list);
-  // let sortField = (req.params.sorting === 'Highest') ? '-overall' : 'overall';
   db.getSortedRestaurantReviews({
-    // sortField: sortField,
     sorting: req.params.sorting,
     restaurantId: req.params.id,
     list: list,
@@ -47,6 +51,7 @@ app.get('/sort/:id/:sorting/:list/', (req, res) => {
 
 app.post('/api/reviews', (req, res) => {
   const newReview = req.body;
+  // newReview = {}
   db.addOneReview(newReview)
     .then((addedReview) => {
       res.status(201).json(addedReview);
